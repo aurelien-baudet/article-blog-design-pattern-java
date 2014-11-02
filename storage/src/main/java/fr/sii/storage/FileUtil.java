@@ -9,7 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileUtil {
-	public static void write(String path, String content) throws IOException {
+	public static void store(String path, String content) throws IOException {
 		File file = new File(path);
 		file.createNewFile();
 		// try-with-resource (Java 7) : ferme automatiquement le stream
