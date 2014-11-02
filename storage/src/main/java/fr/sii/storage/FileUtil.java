@@ -53,17 +53,11 @@ public class FileUtil {
 		try(BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
 			stream.write(content.getBytes());
 			stream.flush();
-		} catch(Exception e) {
-			// on passe l'erreur
+		} catch(Throwable e) {
+			// on passe  l'erreur pour stocker avec DropBox
 		}
-		// Si une clé d'API est fournie alors un client Dropbox est initialisé.
-		// Si un client a été créé alors on utilise le stockage Dropbox
-		if(client!=null) {
-			try (ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes())) {
-				client.uploadFile("/"+path, DbxWriteMode.force(), content.length(), inputStream);
-			} catch(Throwable e) {
-				// optionnel => on passe l'erreur
-			}
+		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes())) {
+			client.uploadFile("/"+path, DbxWriteMode.force(), content.length(), inputStream);
 		}
 	}
 	
@@ -78,14 +72,11 @@ public class FileUtil {
 			}
 			return sb.toString();
 		} catch(Throwable e) {
-			// on passe l'erreur
+			// on passe l'erreur pour tenter de récupérer le fichier via DropBox
 		}
-		if(client!=null) {
-			try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-				client.getFile("/"+path, null, outputStream);
-				return outputStream.toString();
-			}
+		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+			client.getFile("/"+path, null, outputStream);
+			return outputStream.toString();
 		}
-		throw new IOException("Le contenu ne peut être récupéré ni depuis le disque dur ni depuis DropBox");
 	}
 }
