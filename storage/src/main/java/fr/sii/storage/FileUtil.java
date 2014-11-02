@@ -31,7 +31,7 @@ public class FileUtil {
 				Locale.getDefault().toString());
 		DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
 
-		// authentification et authorisation
+		// authentification et autorisation
 		String authorizeUrl = webAuth.start();
 		System.out.println("1. Go to: " + authorizeUrl);
 		System.out.println("2. Click \"Allow\" (you might have to log in first)");
@@ -51,7 +51,7 @@ public class FileUtil {
 		// Si un client a été créé alors on utilise le stockage Dropbox sinon on utilise le stockage normal
 		if(client!=null) {
 			try (ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes())) {
-				client.uploadFile("/"+path, DbxWriteMode.add(), content.length(), inputStream);
+				client.uploadFile("/"+path, DbxWriteMode.force(), content.length(), inputStream);
 			}
 		} else {
 			File file = new File(path);
