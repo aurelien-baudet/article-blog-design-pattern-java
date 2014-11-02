@@ -47,40 +47,45 @@ public class FileUtil {
 	}
 	
 	public static void store(String path, String content) throws IOException, DbxException {
+		File file = new File(path);
+		file.createNewFile();
+		// try-with-resource (Java 7) : ferme automatiquement le stream
+		try(BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
+			stream.write(content.getBytes());
+			stream.flush();
+		} catch(Exception e) {
+			// on passe l'erreur
+		}
 		// Si une clé d'API est fournie alors un client Dropbox est initialisé.
-		// Si un client a été créé alors on utilise le stockage Dropbox sinon on utilise le stockage normal
+		// Si un client a été créé alors on utilise le stockage Dropbox
 		if(client!=null) {
 			try (ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes())) {
 				client.uploadFile("/"+path, DbxWriteMode.force(), content.length(), inputStream);
-			}
-		} else {
-			File file = new File(path);
-			file.createNewFile();
-			// try-with-resource (Java 7) : ferme automatiquement le stream
-			try(BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
-				stream.write(content.getBytes());
-				stream.flush();
+			} catch(Throwable e) {
+				// optionnel => on passe l'erreur
 			}
 		}
 	}
 	
 	public static String read(String path) throws FileNotFoundException, IOException, DbxException {
+		File file = new File(path);
+		try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			String line = reader.readLine();
+			StringBuilder sb = new StringBuilder();
+			while(line!=null) {
+				sb.append(line);
+				line = reader.readLine();
+			}
+			return sb.toString();
+		} catch(Throwable e) {
+			// on passe l'erreur
+		}
 		if(client!=null) {
 			try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 				client.getFile("/"+path, null, outputStream);
 				return outputStream.toString();
 			}
-		} else {
-			File file = new File(path);
-			try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
-				String line = reader.readLine();
-				StringBuilder sb = new StringBuilder();
-				while(line!=null) {
-					sb.append(line);
-					line = reader.readLine();
-				}
-				return sb.toString();
-			}
 		}
+		throw new IOException("Le contenu ne peut être récupéré ni depuis le disque dur ni depuis DropBox");
 	}
 }
