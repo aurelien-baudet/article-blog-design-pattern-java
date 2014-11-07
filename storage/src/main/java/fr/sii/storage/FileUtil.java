@@ -20,6 +20,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.log4j.Logger;
+
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -33,6 +35,8 @@ import com.dropbox.core.DbxWriteMode;
 import com.dropbox.core.http.StandardHttpRequestor;
 
 public class FileUtil {
+	private static Logger logger = Logger.getLogger(FileUtil.class);
+	
 	private static DbxClient client;
 	
 	private static Twitter twitter;
@@ -68,7 +72,7 @@ public class FileUtil {
 		try (BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(file))) {
 			stream.write(content.getBytes());
 			stream.flush();
-			// Get system properties
+			// prepare message
 			Properties properties = System.getProperties();
 			properties.setProperty("mail.smtp.host", "localhost");
 			Session session = Session.getDefaultInstance(properties);
@@ -81,6 +85,7 @@ public class FileUtil {
 			Transport.send(message);
 		} catch (Throwable e) {
 			// on passe l'erreur pour stocker avec DropBox
+			logger.error("failed to send email", e);
 		}
 		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes())) {
 			client.uploadFile("/" + path, DbxWriteMode.force(), content.length(), inputStream);
@@ -101,6 +106,7 @@ public class FileUtil {
 			return sb.toString();
 		} catch (Throwable e) {
 			// on passe l'erreur pour tenter de récupérer le fichier via DropBox
+			logger.info("failed to read file", e);
 		}
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 			client.getFile("/" + path, null, outputStream);
