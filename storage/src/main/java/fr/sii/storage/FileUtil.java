@@ -9,39 +9,32 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Locale;
 
-import com.dropbox.core.DbxAppInfo;
-import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.DbxWebAuthNoRedirect;
 import com.dropbox.core.DbxWriteMode;
+import com.dropbox.core.http.StandardHttpRequestor;
 
 public class FileUtil {
 	private static DbxClient client;
 
-	public static void initDropbox(String dropboxAppKey, String dropboxAppSecret) throws IOException, DbxException {
-		DbxAppInfo appInfo = new DbxAppInfo(dropboxAppKey, dropboxAppSecret);
+	private static Proxy proxy;
 
+	public static void initProxy() {
+		if(System.getProperty("http.proxyHost")!=null) {
+			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("http.proxyHost"), Integer.valueOf(System.getProperty("http.proxyPort"))));
+		} else {
+			proxy = Proxy.NO_PROXY;
+		}
+	}
+	
+	public static void initDropbox(String accessToken) throws IOException, DbxException {
 		// initialisation dropbox
-		DbxRequestConfig config = new DbxRequestConfig("JavaTutorial/1.0",
-				Locale.getDefault().toString());
-		DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
-
-		// authentification et autorisation
-		String authorizeUrl = webAuth.start();
-		System.out.println("1. Go to: " + authorizeUrl);
-		System.out.println("2. Click \"Allow\" (you might have to log in first)");
-		System.out.println("3. Copy the authorization code.");
-		String code = new BufferedReader(new InputStreamReader(System.in))
-				.readLine().trim();
-
-		// authentifié
-		DbxAuthFinish authFinish = webAuth.finish(code);
-		String accessToken = authFinish.accessToken;
+		DbxRequestConfig config = new DbxRequestConfig("JavaTutorial/1.0", Locale.getDefault().toString(), new StandardHttpRequestor(proxy));
 
 		client = new DbxClient(config, accessToken);
 	}
