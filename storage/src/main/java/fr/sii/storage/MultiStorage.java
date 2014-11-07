@@ -20,14 +20,18 @@ public class MultiStorage implements Storage {
 
 	@Override
 	public void store(String path, String content) throws StoreException {
+		boolean stored = false;
 		for(Storage storage : storages) {
 			try {
 				storage.store(path, content);
+				stored = true;
 			} catch(StoreException e) {
 				// on passe pour tester le prochain
 			}
 		}
-		throw new StoreException("Failed to store "+path);
+		if(!stored) {
+			throw new StoreException("Failed to store "+path);
+		}
 	}
 
 	@Override
