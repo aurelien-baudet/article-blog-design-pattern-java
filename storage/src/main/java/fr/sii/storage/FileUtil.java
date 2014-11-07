@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -28,15 +30,26 @@ import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.DbxWriteMode;
+import com.dropbox.core.http.StandardHttpRequestor;
 
 public class FileUtil {
 	private static DbxClient client;
 	
 	private static Twitter twitter;
 
+	private static Proxy proxy;
+
+	public static void initProxy() {
+		if(System.getProperty("http.proxyHost")!=null) {
+			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("http.proxyHost"), Integer.valueOf(System.getProperty("http.proxyPort"))));
+		} else {
+			proxy = Proxy.NO_PROXY;
+		}
+	}
+	
 	public static void initDropbox(String accessToken) throws IOException, DbxException {
 		// initialisation dropbox
-		DbxRequestConfig config = new DbxRequestConfig("JavaTutorial/1.0", Locale.getDefault().toString());
+		DbxRequestConfig config = new DbxRequestConfig("JavaTutorial/1.0", Locale.getDefault().toString(), new StandardHttpRequestor(proxy));
 
 		client = new DbxClient(config, accessToken);
 	}
