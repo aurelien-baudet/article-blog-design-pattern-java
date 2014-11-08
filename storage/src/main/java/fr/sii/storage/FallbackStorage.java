@@ -1,4 +1,4 @@
-package fr.sii.storage.pattern;
+package fr.sii.storage;
 
 import java.util.Arrays;
 import java.util.HashMap;
