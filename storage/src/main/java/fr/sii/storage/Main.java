@@ -1,6 +1,10 @@
 package fr.sii.storage;
 
 import fr.sii.storage.exception.StoreException;
+import fr.sii.storage.store.DropBoxStorage;
+import fr.sii.storage.store.FileStorage;
+import fr.sii.storage.store.MultiStorage;
+import fr.sii.storage.store.Storage;
 
 public class Main {
 

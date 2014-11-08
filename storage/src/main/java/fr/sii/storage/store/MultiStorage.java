@@ -1,4 +1,4 @@
-package fr.sii.storage;
+package fr.sii.storage.store;
 
 import java.util.Arrays;
 import java.util.List;

@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import fr.sii.storage.exception.StoreException;
+import fr.sii.storage.store.FileStorage;
 
 public class FileStorageTest {
 	@Before
