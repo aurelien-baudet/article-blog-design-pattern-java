@@ -1,4 +1,4 @@
-package fr.sii.storage;
+package fr.sii.storage.pattern;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
