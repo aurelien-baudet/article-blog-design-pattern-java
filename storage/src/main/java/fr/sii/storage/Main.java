@@ -4,11 +4,11 @@ import fr.sii.storage.exception.StoreException;
 import fr.sii.storage.listener.NotificationListener;
 import fr.sii.storage.notification.SendMail;
 import fr.sii.storage.notification.Twitter;
-import fr.sii.storage.pattern.DropBoxStorage;
-import fr.sii.storage.pattern.FileStorage;
-import fr.sii.storage.pattern.MultiStorage;
-import fr.sii.storage.pattern.ObservableStorage;
-import fr.sii.storage.pattern.Storage;
+import fr.sii.storage.store.DropBoxStorage;
+import fr.sii.storage.store.FileStorage;
+import fr.sii.storage.store.MultiStorage;
+import fr.sii.storage.store.ObservableStorage;
+import fr.sii.storage.store.Storage;
 
 public class Main {
 

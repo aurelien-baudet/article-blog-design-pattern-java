@@ -1,4 +1,4 @@
-package fr.sii.storage.pattern;
+package fr.sii.storage.store;
 
 import fr.sii.storage.exception.StoreException;
 
