@@ -12,6 +12,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import twitter4j.TwitterException;
+
 import com.dropbox.core.DbxException;
 
 public class FileUtilTest {
@@ -24,7 +26,7 @@ public class FileUtilTest {
 	}
 	
 	@Test
-	public void store() throws IOException, DbxException {
+	public void store() throws IOException, DbxException, TwitterException {
 		FileUtil.store("target/test.txt", "junit store test");
 		List<String> lines = Files.readAllLines(Paths.get("target", "test.txt"), Charset.forName("UTF-8"));
 		Assert.assertEquals("should contain 1 line", 1, lines.size());

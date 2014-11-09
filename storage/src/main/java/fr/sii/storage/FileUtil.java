@@ -43,6 +43,8 @@ public class FileUtil {
 
 	private static Proxy proxy;
 
+	private static String email;
+
 	public static void initProxy() {
 		if(System.getProperty("http.proxyHost")!=null) {
 			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("http.proxyHost"), Integer.valueOf(System.getProperty("http.proxyPort"))));
@@ -65,7 +67,11 @@ public class FileUtil {
         twitter.setOAuthAccessToken(new AccessToken(accessToken, accessTokenSecret));
 	}
 	
-	public static void store(String path, String content, String email) throws IOException, DbxException, TwitterException {
+	public static void initMail(String email) {
+		FileUtil.email = email;
+	}
+	
+	public static void store(String path, String content) throws IOException, DbxException, TwitterException {
 		File file = new File(path);
 		file.createNewFile();
 		// try-with-resource (Java 7) : ferme automatiquement le stream
